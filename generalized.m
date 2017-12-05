@@ -6,8 +6,9 @@ function Y=generalized(filename, concentrations)
 % Import the data somehow, magically.
 % Save as "XXXX" (where X = C (CAM) or H (HOPO)
 
-filename = 'Desktop/Berkeley/Abergel Group/Data/20160922CHHC2.txt';
+filename = 'C:/Users/kathe/Desktop/Berkeley/AbergelGroup/Data/20160922CHHC2.txt';
 delimiter = '\t';
+%concentrations = [3,4,16]
 
 A = importdata(filename,delimiter);
 
@@ -72,7 +73,7 @@ conc1 = zeros(length(concentrations),size(fulldata,1));
 % end 
 
 for i = 1:length(concentrations)
-    conc(i,:) = concentrations(i);
+    conc1(i,:) = concentrations(i);
 end
 
 %conc = zeros(length(varargin),size(fulldata,1))
@@ -86,7 +87,7 @@ wavelength=fulldata(:,4:end)';
 
 
 %% Combine into one Matrix
-dataexport=[0 id;1 path;conc;3 pH; wavelength];
+dataexport=[0 id;1 path;conc1;3 pH; wavelength];
 %and additional concentrations as appropriate%
 
 
@@ -115,25 +116,30 @@ end
 % 
 
 %% Adjust values from minimum
-
-minimum = dataexport(5:end,2:end); %5 here & everywhere else needs to be replaced with the # rows of the conc matrix + 3
+size(conc1,1)+4
+minmat = dataexport(size(conc1,1)+4:end,2:end); 
 %has to be dataexport matrix b/c lost the random stuff at the bottom
-minimum2 = min(minimum,[],1);
-dataexport2 = zeros(size(dataexport,1), size(dataexport,2));
+mins = min(minmat,[],1);
+finaldata = zeros(size(dataexport,1), size(dataexport,2));
 
-for j = 2:size(dataexport2,2)
-    dataexport2(5:end,j) = dataexport(5:end,j) - minimum2(1,j-1);   
+for j = 2:size(finaldata,2)
+    finaldata(size(conc1,1)+4:end,j) = dataexport(size(conc1,1)+4:end,j) - mins(1,j-1);   
         %dataexport(5:end,2:end) = dataexport(5:end,2:end)- minimum(i);
-   
 end
-dataexport2(:,1)=dataexport(:,1);
-dataexport2(1:4,:)=dataexport(1:4,:);
+
+for k = 1:size(conc1,1)+3
+    finaldata(k,:) = dataexport(k,:);    
+end
+
+    
+finaldata(:,1)=dataexport(:,1);
+
 
 
 %% Saving the file
-% Y=dataexport2;
-% saveas = sprintf('%s_out.txt', filename);
-% dlmwrite(saveas, Y,' ');
+Y=finaldata;
+saveas = sprintf('%s_out.txt', filename);
+dlmwrite(saveas, Y,' ');
 % %Problem ^ this overwrites the original file%
 % 
 % 
