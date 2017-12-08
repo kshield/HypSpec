@@ -3,6 +3,7 @@ function Y=generalized(filename, concentrations)
 %concentrations in [ ] form; space delimited
 %% Importing
 % Save as "XXXX" (where X = C (CAM) or H (HOPO)
+filename = 'C:/Users/kathe/Desktop/Berkeley/AbergelGroup/Data/20160922CHHC2.txt';
 delimiter = '\t';
 
 A = importdata(filename,delimiter);
@@ -41,6 +42,7 @@ path = ones(1,size(fulldata,1)-1);
 % IF NOT 1CM:
 % path = zeros(1,size(fulldata,1)-1) + PATHLENGTH IN CM;
 %% Create the Concentration matrix [2]
+concentrations = [2.5E-5];
 conc1 = zeros(length(concentrations),size(fulldata,1));
 % matrix of size: 
 % # of rows = # of entries in the concentrations vector
@@ -90,29 +92,58 @@ Y=finaldata;
 saveas = sprintf('%s_out.txt', filename);
 dlmwrite(saveas, Y,' ');
 
-%% plots
-%plot(pH,mins)
-%for i = 7:size(dataexport,1)
- %  for j = 2:size(dataexport,2)
-  %    plot(dataexport(i,1),dataexport(i,j))
-   %end
-%end
-
-
-%% plot take two : 
-for i = length(concentrations)+4:size(dataexport,1)
-   x = dataexport(i,1);
-  % y = dataexport(i,2);
-  % scatter(x,y)
-  % hold on
-   for j = 2:size(dataexport,2)
-      y = dataexport(i,j);
-      scatter (x,y)
-      hold on
-   end
+%% plot a single pH
+figure
+for i = length(concentrations)+4:size(finaldata,1)
+   x = finaldata(i,1);
+   y = finaldata(i,2);
+   plot(x,y,'.','Color',[0,0,i/1000])
+   hold on
 end
 
 hold off
 
+%% plot a single wavelength
+figure
+for i = 2:size(finaldata,2)
+   x = finaldata(6,1);
+   y = finaldata(6,i);
+   plot(x,y,'.')
+   hold on
+end
+
+hold off
+%% plot take two :
+figure
+for i = length(concentrations)+4:size(finaldata,1)
+   x = finaldata(i,1)
+  % y = dataexport(i,2:end);
+%   plot(x,y,'.','Color',[0,0,j/1000])
+  % scatter(x,y)
+   for j = 2:size(finaldata,2)
+      y = finaldata(i,j)
+      plot(x,y,'.','Color',[0,0,j/1000])
+      hold on
+   end
+
+end
+
+hold off
+
+
+%% plot take three?
+%% plot a single wavelength
+figure
+for i = 2:size(finaldata,2)
+      for j = length(concentrations)+4:size(finaldata,1)
+   x = finaldata(j,1);
+   y = finaldata(j,i);
+   plot(x,y,'.','Color',[sin(i/30),0,cos(i/30)])
+   hold on
+      end
+     hold on
+end
+
+hold off
 end
 
